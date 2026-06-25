@@ -1,0 +1,13 @@
+services:
+  auth-api:
+    build:
+      context: .
+      args:
+        GRADLE_VERSION: ${GRADLE_VERSION}
+        JAVA_VERSION: ${JAVA_VERSION}
+        AUTH_API_PORT: ${AUTH_API_PORT}
+    ports:
+      - "${AUTH_API_PORT}:${AUTH_API_PORT}"
+    env_file: .env
+    volumes:
+      - ./data:/data

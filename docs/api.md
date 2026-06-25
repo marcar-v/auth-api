@@ -15,9 +15,9 @@ title: Auth Service main changes
 
 1. `User` entity and repository.
 2. `Session` entity and repository.
-3. `User` controller.
-4. `Auth` controller.
-5. `UserAuth` DTOs and services.
+3. `User` controller and service.
+4. `Auth` controller and service.
+5. `UserAuth` DTOs.
 
 ### Auth API entities definitions
 
