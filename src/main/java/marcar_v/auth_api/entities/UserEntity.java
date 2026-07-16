@@ -1,7 +1,6 @@
 package marcar_v.auth_api.entities;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 
 @Entity
 @Table(
