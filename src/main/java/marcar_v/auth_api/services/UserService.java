@@ -10,7 +10,8 @@ import marcar_v.auth_api.dtos.UserAuthDTOs.*;
 import marcar_v.auth_api.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 @Service
 public class UserService {
@@ -37,7 +38,7 @@ public class UserService {
         SessionEntity session = sessionRepo.findByAuthToken(authToken)
                 .orElseThrow(() -> new InvalidTokenException("Invalid token")); //Cambiar esto
 
-        if(session.getExpiration().isBefore(LocalDateTime.now())){
+        if(session.getExpiration().isBefore(ZonedDateTime.now(ZoneId.of("Europe/Madrid")))) {
             throw new InvalidTokenException("Expired token");
         }
 

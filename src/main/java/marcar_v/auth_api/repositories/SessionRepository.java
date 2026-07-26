@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface SessionRepository extends JpaRepository<SessionEntity, String>{
     Optional<SessionEntity> findByAuthToken(String authToken);
+    Optional<SessionEntity> findByRefreshToken(String refreshToken);
     void deleteByUserEmail(String email);
 }

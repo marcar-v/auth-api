@@ -3,6 +3,7 @@ package marcar_v.auth_api.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(
@@ -28,11 +29,11 @@ public class SessionEntity {
     private String refreshToken;
 
     @Column(name = "expiration", nullable = false, length = 32)
-    private LocalDateTime expiration;
+    private ZonedDateTime expiration;
 
     protected SessionEntity(){}
 
-    public SessionEntity (String id, UserEntity user, String authToken, String refreshToken, LocalDateTime expiration){
+    public SessionEntity (String id, UserEntity user, String authToken, String refreshToken, ZonedDateTime expiration){
         this.id = id;
         this.user = user;
         this.authToken = authToken;
@@ -72,11 +73,11 @@ public class SessionEntity {
         this.refreshToken = refreshToken;
     }
 
-    public LocalDateTime getExpiration() {
+    public ZonedDateTime getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(LocalDateTime expiration) {
+    public void setExpiration(ZonedDateTime expiration) {
         this.expiration = expiration;
     }
 }
