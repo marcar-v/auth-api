@@ -18,10 +18,12 @@ public class UserService {
     private final UserRepository repo;
     private final SessionRepository sessionRepo;
     private final BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
+    private final MailService mailService;
 
-    public UserService(UserRepository repo, SessionRepository sessionRepo){
+    public UserService(UserRepository repo, SessionRepository sessionRepo, MailService mailService){
         this.repo = repo;
         this.sessionRepo = sessionRepo;
+        this.mailService = mailService;
     }
 
     public CreateUserResponse createUser (CreateUserRequest req){
@@ -46,6 +48,20 @@ public class UserService {
 
         sessionRepo.deleteByUserEmail(user.getEmail());
         repo.delete(user);
+    }
+
+    public void recoveryPassword(String email){
+        //Comprobar que el usuario existe en bbdd
+        //Generar el código y guardarlo hasheado asociado al email en PasswordRecoveryRequest
+        //
+        mailService.sendPasswordRecoveryEmail(email, "test");
+    }
+
+    public void updatePassword(String recoveryCode, String newPassword){
+        //Obtener la fila de la tabla de password recovery request en base al código hasheado previamente
+        //Comprobar que la fila obtenida no tiene la expiración caducada
+        //En base a la fila, obtener el usuario de la bbdd de users
+        //Si existe, actualizar su contraseña y cerrar todas las sessiones
     }
 
 }

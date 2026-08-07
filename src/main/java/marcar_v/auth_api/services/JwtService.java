@@ -37,8 +37,6 @@ public class JwtService {
     public ZonedDateTime calculateExpiration() {
 
         ZonedDateTime result = ZonedDateTime.now(MADRID_ZONE).plusMinutes(Long.parseLong(expirationMinutes));
-        System.out.println("DEBUG expiration calculado: " + result);
         return result;
-        //return ZonedDateTime.now(MADRID_ZONE).plusMinutes(Long.parseLong(expirationMinutes));
     }
 }

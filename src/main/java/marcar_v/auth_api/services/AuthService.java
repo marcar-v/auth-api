@@ -6,14 +6,11 @@ import marcar_v.auth_api.entities.*;
 import marcar_v.auth_api.repositories.*;
 import marcar_v.auth_api.services.exceptions.InvalidCredentialsException;
 import marcar_v.auth_api.services.exceptions.InvalidTokenException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

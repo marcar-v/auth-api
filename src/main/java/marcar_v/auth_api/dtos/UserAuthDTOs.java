@@ -26,11 +26,15 @@ public class UserAuthDTOs {
     public record AuthResponse(
         String authToken,
         String refreshToken,
-        @JsonFormat(pattern = "yyyy-MM-dd 'T' HH:mm:ssXX")
+        @JsonFormat(pattern = "yyyy-MM-dd 'T' HH:mm:ssXXX")
         ZonedDateTime expiration
     ) {}
 
     public record RefreshTokenRequest(
             @NotBlank String refreshToken
+    ) {}
+
+    public record PasswordRecoveryRequest(
+            @NotBlank @Email String email
     ) {}
 }
