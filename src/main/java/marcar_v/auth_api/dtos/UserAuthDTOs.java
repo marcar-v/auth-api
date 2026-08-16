@@ -1,6 +1,7 @@
 package marcar_v.auth_api.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -36,5 +37,13 @@ public class UserAuthDTOs {
 
     public record PasswordRecoveryRequest(
             @NotBlank @Email String email
+    ) {}
+
+    public record UpdatePasswordRequest(
+            @NotBlank String password,
+
+            @NotBlank
+            @JsonProperty("recovery_code")
+            String recoveryCode
     ) {}
 }

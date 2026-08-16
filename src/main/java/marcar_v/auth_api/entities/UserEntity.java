@@ -38,7 +38,7 @@ public class UserEntity {
         return passHash;
     }
 
-    public void setPassHash(){
+    public void setPassHash(String passHash){
         this.passHash = passHash;
     }
 }
