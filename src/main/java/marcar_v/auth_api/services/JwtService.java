@@ -1,9 +1,14 @@
 package marcar_v.auth_api.services;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import marcar_v.auth_api.repositories.SessionRepository;
+import marcar_v.auth_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -38,5 +43,17 @@ public class JwtService {
 
         ZonedDateTime result = ZonedDateTime.now(MADRID_ZONE).plusMinutes(Long.parseLong(expirationMinutes));
         return result;
+    }
+
+    public String getEmailFromToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getSubject();
     }
 }

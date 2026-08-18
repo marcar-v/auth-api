@@ -1,6 +1,7 @@
 package marcar_v.auth_api.services;
 
 
+import io.jsonwebtoken.JwtException;
 import marcar_v.auth_api.dtos.UserAuthDTOs;
 import marcar_v.auth_api.entities.*;
 import marcar_v.auth_api.repositories.*;
@@ -10,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -66,5 +69,47 @@ public class AuthService {
         sessionRepo.save(session);
 
         return new UserAuthDTOs.AuthResponse(newAuthToken, newRefreshToken, newExpiration);
+    }
+
+    @Transactional(readOnly = true)
+    private Optional <String> validateAuthToken(String authToken) {
+        String email;
+        try {
+            email = jwtService.getEmailFromToken(authToken);
+        } catch (JwtException e) {
+            return Optional.empty();
+        }
+
+        if (userRepo.findByEmail(email).isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<SessionEntity> sessionOpt = sessionRepo.findByAuthToken(authToken);
+        if (sessionOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        SessionEntity session = sessionOpt.get();
+
+        if (!session.getUser().getEmail().equals(email)) {
+            return Optional.empty();
+        }
+
+        if (session.getExpiration().isBefore(ZonedDateTime.now(ZoneId.of("Europe/Madrid")))) {
+            return Optional.empty();
+        }
+
+        return Optional.of(email);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkAuthToken(String authToken) {
+        return validateAuthToken(authToken).isPresent();
+    }
+
+    @Transactional
+    public void closeSession(String authToken) {
+        validateAuthToken(authToken)
+                .ifPresent(email -> sessionRepo.deleteByUserEmail(email));
     }
 }

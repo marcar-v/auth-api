@@ -27,4 +27,19 @@ public class AuthController {
     public UserAuthDTOs.AuthResponse refresh(@Valid @RequestBody UserAuthDTOs.RefreshTokenRequest req) {
         return this.service.refresh(req);
     }
+
+    @GetMapping("/auth")
+    @ResponseStatus(HttpStatus.OK)
+    public UserAuthDTOs.AuthCheckResponse checkAuthToken(@RequestHeader("Authorization") String authHeader){
+        String authToken = authHeader.replaceFirst("^Bearer ", "");
+        boolean isValid = this.service.checkAuthToken(authToken);
+        return new UserAuthDTOs.AuthCheckResponse(isValid);
+    }
+
+    @DeleteMapping("/auth")
+    @ResponseStatus(HttpStatus.OK)
+    public void closeSession(@RequestHeader("Authorization") String authHeader) {
+        String authToken = authHeader.replaceFirst("^Bearer ", "");
+        this.service.closeSession(authToken);
+    }
 }

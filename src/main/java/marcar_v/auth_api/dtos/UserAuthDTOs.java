@@ -46,4 +46,8 @@ public class UserAuthDTOs {
             @JsonProperty("recovery_code")
             String recoveryCode
     ) {}
+
+    public record AuthCheckResponse(
+            boolean valid
+    ) {}
 }
