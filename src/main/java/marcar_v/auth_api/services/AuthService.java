@@ -5,8 +5,7 @@ import io.jsonwebtoken.JwtException;
 import marcar_v.auth_api.dtos.UserAuthDTOs;
 import marcar_v.auth_api.entities.*;
 import marcar_v.auth_api.repositories.*;
-import marcar_v.auth_api.services.exceptions.InvalidCredentialsException;
-import marcar_v.auth_api.services.exceptions.InvalidTokenException;
+import marcar_v.auth_api.services.exceptions.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +76,7 @@ public class AuthService {
         try {
             email = jwtService.getEmailFromToken(authToken);
         } catch (JwtException e) {
-            return Optional.empty();
+            throw new InvalidTokenException("Malformed or invalid token");
         }
 
         if (userRepo.findByEmail(email).isEmpty()) {
@@ -86,17 +85,17 @@ public class AuthService {
 
         Optional<SessionEntity> sessionOpt = sessionRepo.findByAuthToken(authToken);
         if (sessionOpt.isEmpty()) {
-            return Optional.empty();
+            throw new SessionNotFoundException("Session not found");
         }
 
         SessionEntity session = sessionOpt.get();
 
         if (!session.getUser().getEmail().equals(email)) {
-            return Optional.empty();
+            throw new SessionMismatchException("Session does not belong to this user ");
         }
 
         if (session.getExpiration().isBefore(ZonedDateTime.now(ZoneId.of("Europe/Madrid")))) {
-            return Optional.empty();
+            throw new SessionExpiredException("Session expired");
         }
 
         return Optional.of(email);
