@@ -33,4 +33,16 @@ public class UserController {
 
         this.service.deleteUser(authToken);
     }
+
+    @PostMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    public void recoveryPassword(@Valid @RequestBody PasswordRecoveryRequest request){
+        this.service.recoveryPassword(request.email());
+    }
+
+    @PutMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request){
+        this.service.updatePassword(request.recoveryCode(), request.password());
+    }
 }

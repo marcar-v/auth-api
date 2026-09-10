@@ -1,13 +1,19 @@
 package marcar_v.auth_api.services;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import marcar_v.auth_api.repositories.SessionRepository;
+import marcar_v.auth_api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Service
@@ -17,6 +23,8 @@ public class JwtService {
 
     @Value("${jwt.expiration-minutes}")
     private String expirationMinutes;
+
+    private static final ZoneId MADRID_ZONE = ZoneId.of("Europe/Madrid");
 
     public String generateToken(String email) {
         Date now = new Date();
@@ -31,7 +39,21 @@ public class JwtService {
                 .compact();
     }
 
-    public LocalDateTime calculateExpiration() {
-        return LocalDateTime.now().plusMinutes(Long.parseLong(expirationMinutes));
+    public ZonedDateTime calculateExpiration() {
+
+        ZonedDateTime result = ZonedDateTime.now(MADRID_ZONE).plusMinutes(Long.parseLong(expirationMinutes));
+        return result;
+    }
+
+    public String getEmailFromToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getSubject();
     }
 }
